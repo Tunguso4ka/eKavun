@@ -12,14 +12,14 @@ async def error_notify(update: Update, exception):
         chat_title = update.callback_query.message.chat.title
         chat_id = update.callback_query.message.chat.id
         command = update.callback_query.message.text
-        await update.callback_query.message.reply(f"تحذير! خطأ فادح!\nВиникла помилочка :'(\n{exception}")
+        await update.callback_query.message.reply(f"Виникла помилочка :'(\nЯ вже повідомив адміністраторів\n{exception}")
     elif "message" in update:
         tag = update.message.from_user.username
         id = update.message.from_user.id
         chat_title = update.message.chat.title
         chat_id = update.message.chat.id
         command = update.message.text
-        await update.message.reply(f"تحذير! خطأ فادح!\nВиникла помилочка :'(\n{exception}")
+        await update.message.reply(f"Виникла помилочка :'(\nЯ вже повідомив адміністраторів\n{exception}")
     else:
         tag = "error"
         id=1

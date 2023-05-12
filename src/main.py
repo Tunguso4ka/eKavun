@@ -13,8 +13,9 @@ dotenv.load_dotenv()
 TOKEN = os.getenv("TOKEN", "")
 MAIN_CHAT = int(os.getenv("MAIN_CHAT", 0))
 LOG_CHANNEL = int(os.getenv("LOGS", 0))
+AUTHORISIED_CHATS = [int(i) for i in os.getenv("AUTHORISIED_CHATS", "").split(', ')]
 
-if any((not TOKEN, not MAIN_CHAT, not LOG_CHANNEL)):
+if any((not TOKEN, not MAIN_CHAT, not LOG_CHANNEL, not AUTHORISIED_CHATS)):
     raise ValueError("You wasn't set env vars, look at .env-example")
 
 logging.basicConfig(level=logging.INFO)

@@ -3,7 +3,7 @@ from aiogram.types import Message
 import texts
 import variables
 
-from main import DB, bot, LOG_CHANNEL, MAIN_CHAT
+from main import DB, bot, LOG_CHANNEL, MAIN_CHAT, AUTHORISIED_CHATS
 
 async def private_announce(message: Message):
     command, id, *text = message.text.split(" ", 2)
@@ -29,4 +29,4 @@ async def group_announce(message: Message):
 
 async def spy_on(message: Message):
     id=message.chat.id
-    if id not in [MAIN_CHAT, LOG_CHANNEL, -1001360173721, -1001755664760, -1001632436174]: await bot.send_message(LOG_CHANNEL, f"<b>Повідомлення.</b>\n\n<b>Людина:</b>\n@{message.from_user.username}\n<code>{message.from_user.id}</code>\n<b>Чат:</b>\n<code>{message.chat.title}</code>\n<code>{message.chat.id}</code>\n<b>Текст:</b>\n<code>{message.text}</code>")
+    if id not in ([MAIN_CHAT, LOG_CHANNEL] + AUTHORISIED_CHATS): await bot.send_message(LOG_CHANNEL, f"<b>Повідомлення.</b>\n\n<b>Людина:</b>\n@{message.from_user.username}\n<code>{message.from_user.id}</code>\n<b>Чат:</b>\n<code>{message.chat.title}</code>\n<code>{message.chat.id}</code>\n<b>Текст:</b>\n<code>{message.text}</code>")
