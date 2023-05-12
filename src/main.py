@@ -31,7 +31,7 @@ if __name__ == "__main__":
     import custom_filters
     import states
     import variables
-    from buttons import party, party_select, captcha_cb, candidates_cb, vote_cb, marriage_cb, permission_cb
+    from buttons import party, party_select, captcha_cb, candidates_cb, marriage_cb, permission_cb, kavunball_bet_cb
 
     # bound filter
 
@@ -120,26 +120,6 @@ if __name__ == "__main__":
         commands_prefix="!",
     )
     dp.register_message_handler(
-        handlers.vote.reg_candidate.start_reg,
-        passport_exist=True,
-        chat_type="private",
-        commands="балотуватись",
-        commands_prefix="!",
-    )
-    dp.register_message_handler(
-        handlers.vote.reg_candidate.get_program,
-        passport_exist=True,
-        chat_type="private",
-        state=states.RegCandidate.program
-    )
-    dp.register_message_handler(
-        handlers.vote.voting.list_of_candidates,
-        passport_exist=True,
-        chat_type="private", 
-        commands="голосувати",
-        commands_prefix="!",
-    )
-    dp.register_message_handler(
         handlers.money.get_id,
         state=states.Pay.id
     )
@@ -180,16 +160,6 @@ if __name__ == "__main__":
         handlers.party.edit_partyies.no,
         party_select.filter(),
         lambda cb: "no" in cb.data,
-        chat_type="private",
-    )
-    dp.register_callback_query_handler(
-        handlers.vote.voting.get_candidate_info,
-        candidates_cb.filter(),
-        chat_type="private",
-    )
-    dp.register_callback_query_handler(
-        handlers.vote.voting.vote,
-        vote_cb.filter(),
         chat_type="private",
     )
     dp.register_callback_query_handler(
@@ -444,30 +414,6 @@ if __name__ == "__main__":
         handlers.party.create_party.get_second_tag,
         state=states.CreateParty.id_2
     )
-    dp.register_message_handler(
-        handlers.vote.admins.start_reg_candidats,
-        passport_exist=True,
-        need_permission="can_give_passports",
-        chat_type="private",
-        commands="реєстрація",
-        commands_prefix="!",
-    )
-    dp.register_message_handler(
-        handlers.vote.admins.start_voting,
-        passport_exist=True,
-        need_permission="can_give_passports",
-        chat_type="private",
-        commands="голосування",
-        commands_prefix="!",
-    )
-    dp.register_message_handler(
-        handlers.vote.admins.final_voting,
-        passport_exist=True,
-        need_permission="can_give_passports",
-        chat_type="private",
-        commands="фінал",
-        commands_prefix="!",
-    )
     dp.register_callback_query_handler(
         handlers.moderation.save,
         permission_cb.filter(num="10"),
@@ -618,5 +564,118 @@ if __name__ == "__main__":
         handlers.passport.show_passports.show_diplomatic_passport,
         commands=["диппас", "дип_пас", "дипломатичний_паспорт"],
         commands_prefix="!"
+    )
+    #КАВУНБОЛ
+    dp.register_message_handler(
+        handlers.games.kavunball.game_bot,
+        is_reply=False,
+        commands="кавунбол",
+        commands_prefix="!"
+    )
+    dp.register_message_handler(
+        handlers.games.kavunball.get_bet,
+        is_reply=True,
+        commands="кавунбол",
+        commands_prefix="!"
+    )
+    dp.register_callback_query_handler(
+        handlers.games.kavunball.bet_declined,
+        kavunball_bet_cb.filter(id1="0")
+    )
+    dp.register_callback_query_handler(
+        handlers.games.kavunball.bet_accepted,
+        kavunball_bet_cb.filter()
+    )
+    dp.register_message_handler(
+        handlers.games.kavunball.bet_proposal,
+        state=states.KavunBall.bet_proposal_pass
+    )
+    #REPUTATION
+    dp.register_message_handler(
+        handlers.reputation.based,
+        is_reply=True,
+        commands=["аза", "азіровано"],
+        commands_prefix="бБ"
+    )
+    dp.register_message_handler(
+        handlers.reputation.cringe,
+        is_reply=True,
+        commands=["рінж", "рінжа", "ринж", "ринжа"],
+        commands_prefix="кК"
+    )
+    #ANNOUNCMENTS
+    dp.register_message_handler(
+        handlers.announcement.private_announce,
+        need_permission="can_ban",
+        commands=["повідомити_людину", "пов_люд"],
+        commands_prefix="!"
+    )
+    dp.register_message_handler(
+        handlers.announcement.global_announce,
+        need_permission="can_ban",
+        commands="повідомити",
+        commands_prefix="!"
+    )
+    dp.register_message_handler(
+        handlers.announcement.group_announce,
+        need_permission="can_ban",
+        commands="оголошення",
+        commands_prefix="!"
+    )
+    #VOTE
+    dp.register_message_handler(
+        handlers.vote.create_vote,
+        #chat_type="private",
+        need_permission="can_give_passports",
+        commands="зробити_голосування",
+        commands_prefix="!"
+    )
+    dp.register_message_handler(
+        handlers.vote.add_text,
+        state=states.Vote.add_text_pass
+    )
+    dp.register_message_handler(
+        handlers.vote.save_vote,
+        state=states.Vote.save_vote_pass
+    )
+    dp.register_message_handler(
+        handlers.vote.add_candidate,
+        #chat_type="private",
+        need_permission="can_give_passports",
+        commands="додати_кандидата",
+        commands_prefix="!"
+    )
+    dp.register_message_handler(
+        handlers.vote.update_candidate,
+        #chat_type="private",
+        need_permission="can_give_passports",
+        commands="змінити_кандидата",
+        commands_prefix="!"
+    )
+    dp.register_message_handler(
+        handlers.vote.list_candidates,
+        chat_type='private',
+        commands="проголосувати",
+        commands_prefix="!"
+    )
+    dp.register_callback_query_handler(
+        handlers.vote.vote,
+        candidates_cb.filter(),
+        chat_type="private"
+    )
+    dp.register_message_handler(
+        handlers.vote.end_vote,
+        need_permission="can_give_passports",
+        commands="закінчити_голосування",
+        commands_prefix="!"
+    )
+    #chat join
+    #це поки що не працює, тому що я хз що за приватна група
+    dp.chat_join_request_handler(
+        handlers.chatjoin.new_request
+    )
+    #AT THE END PLEASE
+    dp.register_message_handler(
+        handlers.announcement.spy_on
     )
     executor.start_polling(dp, skip_updates=True, on_shutdown=DB.close, on_startup=DB.init_tables)

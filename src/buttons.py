@@ -9,15 +9,16 @@ from aiogram.utils.callback_data import CallbackData
 
 import variables
 
-from models import Candidate
+from models import Candidates
 
 captcha_cb = CallbackData("cap", "answer")
 party_select = CallbackData("sel", "act")
 party = CallbackData("par", "act")
-candidates_cb = CallbackData("can", "id")
-vote_cb = CallbackData("vote", "id")
+#candidates_cb = CallbackData("can", "id")
+candidates_cb = CallbackData("vote", "id")
 marriage_cb = CallbackData("marr", "id1", "id2")
 permission_cb = CallbackData("perm", "id", "num", "active")
+kavunball_bet_cb = CallbackData("bet", "id1", "id2", "your_balance", "enemy_balance", "bet")
 
 def sex_keyboard():
     sex_menu = ReplyKeyboardMarkup(
@@ -123,22 +124,9 @@ def gen_captcha_keyboard(correct, user_id):
             )
     return captcha
 
-def candidates_keyboard(candidates: Dict[int, Candidate]):
+def candidates_keyboard(candidates):
     keyb = InlineKeyboardMarkup(row_width=1)
-    for id, candidate in candidates.items():
-        keyb.add(InlineKeyboardButton(
-            " ".join([
-                    candidate.name,
-                    candidate.surname
-                ]),
-            callback_data=candidates_cb.new(id=str(candidate.id))
-        ))
-    return keyb
-
-def vote(id: int):
-    str_id = str(id)
-    keyb = InlineKeyboardMarkup()
-    keyb.add(InlineKeyboardButton("Проголосувати", callback_data=vote_cb.new(id=str_id)))
+    for i in candidates: keyb.add(InlineKeyboardButton(i[1], callback_data=candidates_cb.new(id=str(i[0]))))
     return keyb
 
 def marriage_buttons(id1, id2):
@@ -191,3 +179,12 @@ def diplomatic_passport_keyboard():
         resize_keyboard=True
     )
     return diplomatic_passport_menu
+
+def kavunball_bet_buttons(id1, id2, your_balance, enemy_balance, bet):
+    id1, id2 = str(id1), str(id2)
+    keyb = InlineKeyboardMarkup(row_width=2)
+    keyb.add(
+        InlineKeyboardButton("Прийняти", callback_data=kavunball_bet_cb.new(id1, id2, your_balance, enemy_balance, bet)),
+        InlineKeyboardButton("Відхилити", callback_data=kavunball_bet_cb.new("0", id2, your_balance, enemy_balance, bet))
+    )
+    return keyb

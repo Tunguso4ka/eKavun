@@ -41,7 +41,7 @@ async def get_id(message: Message, state: FSMContext):
                 "емодзі",
                 "дата_народження",
                 "фото_паспорту",
-                "дипломатичний_паспорт"
+                "репутація"
             )
             data = await state.get_data()
             changing_column = data.get("column", "")
@@ -51,8 +51,7 @@ async def get_id(message: Message, state: FSMContext):
                     "стать": buttons.sex_keyboard,
                     "статус": buttons.status_keyboard,
                     "громадянство": buttons.citizenship_keyboard,
-                    "робота": buttons.job_keyboard,
-                    "дипломатичний_паспорт": buttons.diplomatic_passport_keyboard
+                    "робота": buttons.job_keyboard
                 }
                 keyboard = keyboards.get(changing_column, ReplyKeyboardRemove)
                 await message.answer("Введіть нові дані або оберіть з клавіатури:", reply_markup=keyboard()) #type: ignor
@@ -79,7 +78,7 @@ async def get_new_data(message: Message, state: FSMContext):
             "емодзі": {"column": "emoji", "value": None},
             "дата_народження": {"column": "birthdate", "value": None},
             "фото_паспорту": {"column": "passport_photo", "value": None},
-            "дипломатичний_паспорт": {"column": "have_diplomatic_passport", "value": {"Має": True, "Немає": False}}
+            "репутація": {"column": "reputation", "value": None}
         }
         await state.finish()
         current_data = columns.get(column)  # type: ignore
@@ -87,6 +86,7 @@ async def get_new_data(message: Message, state: FSMContext):
             if current_data["value"]: data = current_data["value"][new_data]
             else: data = new_data
             if column == "фото_паспорту": data = message.photo[-1].file_id
+            elif column == "дата_народження": data = data.replace('.', '-')
             result = await DB.update_passport(column=current_data["column"], id=target, data=data)
             if not result:
                 await message.answer(f"Дані оновлено", reply_markup=ReplyKeyboardRemove())

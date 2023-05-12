@@ -16,7 +16,7 @@ class Passport:
     is_citizen: bool
     passport_photo: str
     birthdate: str
-    have_diplomatic_passport: bool
+    reputation: int
 
 @dataclass
 class Diploma:
@@ -55,16 +55,6 @@ class Member:
     can_add_members: bool
 
 @dataclass
-class Candidate:
-    id: int
-    name: str
-    surname: str
-    username: str
-    party: str
-    program: str
-    votes: int
-
-@dataclass
 class Admin:
     id: int
     chat: int
@@ -77,7 +67,23 @@ class Admin:
     can_promote: bool
     can_give_diplomas: bool
 
-class StatusOfVoting(Enum):
-    NO_VOTING = 1
-    REGISTER_OF_CANDIDATES = 2
-    VOTING = 3
+@dataclass
+class KavunBall:
+    your_id: int
+    enemy_id: int
+    bet: int
+
+@dataclass
+class VoteInfo:
+    title: str
+    text: str
+
+@dataclass
+class VotedFor:
+    id: int
+    voted: int
+
+@dataclass
+class Candidates:
+    id: int
+    name: str

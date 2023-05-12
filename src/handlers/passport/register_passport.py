@@ -66,7 +66,7 @@ async def giving_sex(message: Message, state: FSMContext):
 
 async def giving_birthdate(message: Message, state: FSMContext):
     async with state.proxy() as data:
-        data['birthdate'] = message.text
+        data['birthdate'] = message.text.replace('.', '-')
     await message.answer(text=texts.SIXTH_STEP)
     await states.GivePassport.next()
 
@@ -99,14 +99,13 @@ async def giving_info(message: Message, state: FSMContext):
 async def giving_job(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data['job'] = variables.JOBS[message.text]
-        print(data["id"])
-        try:
-            await bot.send_message(data["id"], texts.PASSPORT_WAS_GIVEN)
-        except (CantInitiateConversation, CantTalkWithBots):
-            pass
+        #print(data["id"])
         await DB.save_passport(data=data.as_dict())
     await message.answer(
         text="<b> Документ створено!</b>",
         reply_markup=ReplyKeyboardRemove()
     )
+    async with state.proxy() as data:
+        try: await bot.send_message(data["id"], texts.PASSPORT_WAS_GIVEN)
+        except Exceptiton as e: await message.answer(text=e)
     await state.finish()

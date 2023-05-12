@@ -80,3 +80,12 @@ class ChangeDiploma(StatesGroup):
     column_pass = State()
     id_pass = State()
     change_data_pass = State()
+
+class KavunBall(StatesGroup):
+    get_bet_pass = State()
+    bet_proposal_pass = State()
+
+class Vote(StatesGroup):
+    create_vote_pass = State()
+    add_text_pass = State()
+    save_vote_pass = State()

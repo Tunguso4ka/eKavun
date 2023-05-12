@@ -21,7 +21,7 @@ class PassportDB(DB):
     async def get_passport(
         self,
         id: int=0,
-        username: str="",
+        username: str=""
     ) -> Optional[Passport]:
         """Get user profile and return one as tuple"""
         async with self.connection.execute("""
@@ -29,14 +29,17 @@ class PassportDB(DB):
                 user_id, name, surname, sex, username,
                 balance, status, job, emoji,
                 partner, is_citizen, passport_photo,
-                birthdate, have_diplomatic_passport
+                birthdate, reputation
             FROM PASSPORTS WHERE user_id=? OR username=?""", (id, username,)) as cursor:
             if (passport := (await cursor.fetchone())):
                 passport_as_class = Passport(*passport)
                 return passport_as_class
             else:
                 return None
-    
+
+    async def get_all_ids(self):
+        async with self.connection.execute("SELECT user_id FROM PASSPORTS") as cursor: return await cursor.fetchall()
+
     async def update_passport(self, column: str, id: int, data: Union[str, int]):
         queryies ={
             "name": "UPDATE PASSPORTS SET name=(?) WHERE user_id=(?)",
@@ -50,7 +53,7 @@ class PassportDB(DB):
             "citizenship": "UPDATE PASSPORTS SET is_citizen=? WHERE user_id=?",
             "birthdate": "UPDATE PASSPORTS SET birthdate=? WHERE user_id=?",
             "passport_photo": "UPDATE PASSPORTS SET passport_photo=? WHERE user_id=?",
-            "have_diplomatic_passport": "UPDATE PASSPORTS SET have_diplomatic_passport=? WHERE user_id=?"
+            "reputation": "UPDATE PASSPORTS SET reputation=? WHERE user_id=?"
         }
         query = queryies.get(column, "")
         data_for_query = (data, id)
@@ -65,52 +68,28 @@ class PassportDB(DB):
         return 0
     
     async def add_or_take_money(self, id: int, sum: int, operation: Literal["+", "-"]) -> int:
-        if sum <= 0:
-            return 1
+        if sum <= 0: return 1
         passport = await self.get_passport(id=id)
-        if passport:
-            new_balance = OPERATORS[operation](passport.balance, sum)
-            if new_balance >= 0:
-                await self.connection.execute("""
-                    UPDATE PASSPORTS SET balance=? WHERE user_id=?
-                """, (new_balance, id))
-                await self.commit()
-                return 0
-            else:
-                return 2
-        else:
-            return 3
+        if not passport: return 3
+        new_balance = OPERATORS[operation](passport.balance, sum)
+        if new_balance < 0: return 2
+        await self.connection.execute("UPDATE PASSPORTS SET balance=? WHERE user_id=?", (new_balance, id))
+        await self.commit()
+        return 0
     
     async def marry(self, id1: int, id2: int):
         profile1 = await self.get_passport(id1)
         profile2 = await self.get_passport(id2)
-        if profile1 and profile2:
-            if profile1.sex != profile2.sex:
-                if (profile1.partner == 0) and (profile2.partner == 0):
-                    await self.connection.executemany("""
-                        UPDATE PASSPORTS SET partner=(?) WHERE user_id=(?)
-                    """, 
-                    (
-                        (id2, id1),
-                        (id1, id2)
-                    )
-                    )
-                    return 0
-                else:
-                    return 1
-            else:
-                return 2
-        else:
-            return 3
+        if not (profile1 and profile2): return 3
+        if profile1.sex == profile2.sex: return 2
+        if (profile1.partner != 0) and (profile2.partner != 0): return 1
+        await self.connection.executemany("UPDATE PASSPORTS SET partner=(?) WHERE user_id=(?)", ( (id2, id1), (id1, id2) ))
+        return 0
 
     async def divorce(self, id1: int, id2: int):
         profile1 = await self.get_passport(id1)
         profile2 = await self.get_passport(id2)
-        if profile1 and profile2:
-            if profile1.partner == id2 and profile2.partner == id1:
-                await self.connection.executemany("UPDATE PASSPORTS SET partner=0 WHERE user_id=(?)", ((id1,), (id2,),))
-                return 0
-            else:
-                return 1
-        else:
-            return 2
+        if not profile1 and not profile2: return 2
+        if profile1.partner != id2 and profile2.partner != id1: return 1
+        await self.connection.executemany("UPDATE PASSPORTS SET partner=0 WHERE user_id=(?)", ((id1,), (id2,),))
+        return 0

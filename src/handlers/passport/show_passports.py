@@ -65,8 +65,9 @@ async def show_pass_admin(message: Message):
         await message.answer(texts.PASSPORT_DO_NOT_EXIST)
 
 async def find_pass_admin(message: Message):
-    target_username = '@' + str(message.text).split('@')[1]
-    passport = await DB.get_passport(username=target_username)
+    command, target = message.text.split(" ", 1)
+    if target[0] == '@': passport = await DB.get_passport(username=target)
+    else: passport = await DB.get_passport(id=int(target))
     if passport:
         if passport.partner != 0:
             partner_passport = await DB.get_passport(passport.partner)
@@ -106,5 +107,5 @@ async def show_diplomatic_passport(message: Message):
             years_old=(date.today() - date.fromisoformat(passport.birthdate)).days // 365
         )
         if passport.passport_photo not in ["", None, "None"]: await message.answer_photo(photo=passport.passport_photo, caption=text)
-        else: await nessage.answer(text)
+        else: await message.answer(text)
     else: await message.answer(texts.DIPLOMATIC_PASSPORT_DO_NOT_EXIST)

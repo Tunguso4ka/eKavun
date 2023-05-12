@@ -1,6 +1,4 @@
-import aiosqlite
-import asyncio
-import os
+import aiosqlite, asyncio, os
 
 class DB:
     def __init__(self) -> None:
@@ -26,7 +24,7 @@ class DB:
                 is_citizen bool,
                 passport_photo text,
                 birthdate text,
-                have_diplomatic_passport bool
+                reputation int DEFAULT 0
             )
         """)
         await self.connection.execute("""
@@ -58,24 +56,6 @@ class DB:
             )
         """)
         await self.connection.execute("""
-            CREATE TABLE IF NOT EXISTS CANDIDATES (
-                id int,
-                program text,
-                votes int
-            )
-        """)
-        await self.connection.execute("""
-            CREATE TABLE IF NOT EXISTS VOTED (
-                id int,
-                vote_for int
-            )
-        """)
-        await self.connection.execute("""
-            CREATE TABLE IF NOT EXISTS STATUS_OF_VOTE (
-                status int
-            )
-        """)
-        await self.connection.execute("""
             CREATE TABLE IF NOT EXISTS FUNDS (
                 fund_id integer primary key autoincrement,
                 fund_owner_id int,
@@ -87,7 +67,7 @@ class DB:
             CREATE TABLE IF NOT EXISTS FUNDS_PERSONAL (
                 fund_id int,
                 employee_id int,
-                can_withraw bool,
+                can_withdraw bool,
                 can_add_personal bool
             )
         """)
@@ -140,6 +120,24 @@ class DB:
                 date_course_start text,
                 date_course_end text,
                 average_grade int
+            )
+        """)
+        await self.connection.execute("""
+            CREATE TABLE IF NOT EXISTS VOTE_INFO (
+                title text,
+                text text
+            )
+        """)
+        await self.connection.execute("""
+            CREATE TABLE IF NOT EXISTS VOTED_FOR (
+                id int,
+                voted int
+            )
+        """)
+        await self.connection.execute("""
+            CREATE TABLE IF NOT EXISTS CANDIDATES (
+                id int,
+                name text
             )
         """)
         return 0
