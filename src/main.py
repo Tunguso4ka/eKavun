@@ -614,7 +614,7 @@ if __name__ == "__main__":
     dp.register_message_handler(
         handlers.announcement.global_announce,
         need_permission="can_ban",
-        commands="повідомити",
+        commands="повідомити_всіх",
         commands_prefix="!"
     )
     dp.register_message_handler(
