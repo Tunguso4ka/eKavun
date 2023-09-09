@@ -27,7 +27,7 @@ class CheckPermissions(BoundFilter):
                 "can_pin": admin.can_pin,
                 "can_give_passports": admin.can_give_passports,
                 "can_manage_money": admin.can_manage_money,
-                "can_manage_partyies": admin.can_manage_partyies,
+                "can_manage_parties": admin.can_manage_parties,
                 "can_promote": admin.can_promote,
                 "can_give_diplomas": admin.can_give_diplomas
             }

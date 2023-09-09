@@ -1,1 +1,1 @@
-from . import create_party, edit_partyies, show_partyies
+from . import create_party, edit_parties, show_parties

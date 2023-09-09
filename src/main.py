@@ -88,12 +88,12 @@ if __name__ == "__main__":
     #     commands_prefix="!"
     # )
     dp.register_message_handler(
-        handlers.party.show_partyies.show_partyies,
+        handlers.party.show_parties.show_parties,
         commands="партії",
         commands_prefix="!"
     )
     dp.register_message_handler(
-        handlers.party.edit_partyies.party_profile,
+        handlers.party.edit_parties.party_profile,
         chat_type="private",
         commands="партія",
         commands_prefix="!"
@@ -138,12 +138,12 @@ if __name__ == "__main__":
         commands_prefix="!"
     )
     dp.register_message_handler(
-        handlers.party.edit_partyies.get_id_for_add,
+        handlers.party.edit_parties.get_id_for_add,
         chat_type="private",
         state=states.AddMember.id
     )
     dp.register_message_handler(
-        handlers.party.edit_partyies.get_id_for_delete,
+        handlers.party.edit_parties.get_id_for_delete,
         chat_type="private",
         state=states.DeleteMember.id
     )
@@ -152,24 +152,24 @@ if __name__ == "__main__":
         captcha_cb.filter()
     )
     dp.register_callback_query_handler(
-        handlers.party.edit_partyies.yes,
+        handlers.party.edit_parties.yes,
         party_select.filter(),
         lambda cb: "yes" in cb.data,
         chat_type="private",
     )
     dp.register_callback_query_handler(
-        handlers.party.edit_partyies.no,
+        handlers.party.edit_parties.no,
         party_select.filter(),
         lambda cb: "no" in cb.data,
         chat_type="private",
     )
     dp.register_callback_query_handler(
-        handlers.party.edit_partyies.add_member,
+        handlers.party.edit_parties.add_member,
         party.filter(act="add"),
         chat_type="private",
     )
     dp.register_callback_query_handler(
-        handlers.party.edit_partyies.delete_member,
+        handlers.party.edit_parties.delete_member,
         party.filter(act="delete"),
         chat_type="private",
     )
@@ -271,6 +271,7 @@ if __name__ == "__main__":
         commands_prefix="!",
         chat_type="private"
     )
+    #PASSPORTS
     dp.register_message_handler(
         handlers.passport.show_passports.find_pass_admin,
         need_permission="can_mute",
@@ -357,6 +358,7 @@ if __name__ == "__main__":
         handlers.passport.delete_passport.delete_passport,
         state=states.DeletePassport.delete_pass
     )
+    #MODERATION
     dp.register_message_handler(
         handlers.moderation.unmute,
         is_reply=True,
@@ -392,9 +394,10 @@ if __name__ == "__main__":
         commands=["мут", "mute"],
         commands_prefix='!'
     )
+    #PARTIES
     dp.register_message_handler(
         handlers.party.create_party.create_party_start,
-        need_permission="can_manage_partyies",
+        need_permission="can_manage_parties",
         commands="зареєструвати",
         commands_prefix="!",
         chat_type="private",
@@ -425,6 +428,7 @@ if __name__ == "__main__":
         permission_cb.filter(),
         need_permission="can_promote",
     )
+    #CENTRABANK
     dp.register_message_handler(
         handlers.centrabank.emission.add_money,
         need_permission="can_manage_money",
@@ -489,6 +493,7 @@ if __name__ == "__main__":
         handlers.passport.register_passport.giving_birthdate,
         state=states.GivePassport.birthdate_pass
     )
+    #DIPLIMA
     dp.register_message_handler(
         handlers.diploma.delete_diploma.delete_diploma_start,
         need_permission="can_give_diplomas",
@@ -561,12 +566,7 @@ if __name__ == "__main__":
         handlers.diploma.edit_diploma.get_new_data,
         state=states.ChangeDiploma.change_data_pass
     )
-    dp.register_message_handler(
-        handlers.passport.show_passports.show_diplomatic_passport,
-        commands=["диппас", "дип_пас", "дипломатичний_паспорт"],
-        commands_prefix="!"
-    )
-    #КАВУНБОЛ
+    #KAVUNBALL
     dp.register_message_handler(
         handlers.games.kavunball.game_bot,
         is_reply=False,
@@ -623,7 +623,7 @@ if __name__ == "__main__":
         commands="оголошення",
         commands_prefix="!"
     )
-    #VOTE
+    #VOTES
     dp.register_message_handler(
         handlers.vote.create_vote,
         #chat_type="private",
@@ -669,14 +669,5 @@ if __name__ == "__main__":
         need_permission="can_give_passports",
         commands="закінчити_голосування",
         commands_prefix="!"
-    )
-    #chat join
-    #це поки що не працює, тому що я хз що за приватна група
-    dp.chat_join_request_handler(
-        handlers.chatjoin.new_request
-    )
-    #AT THE END PLEASE
-    dp.register_message_handler(
-        handlers.announcement.spy_on
     )
     executor.start_polling(dp, skip_updates=True, on_shutdown=DB.close, on_startup=DB.init_tables)

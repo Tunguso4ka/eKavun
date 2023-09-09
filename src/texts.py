@@ -103,17 +103,6 @@ PASSPORT = """
 {info}
 """
 
-DIPLOMATIC_PASSPORT = """
-<b>ДИПЛОМАТИЧНИЙ ПАСПОРТ КАВУНЕВОЇ РЕСПУБЛІКИ
-DIPLOMATIC PASSPORT OF KAVUNIAN REPUBLIC
-PASSEPORT DIPLOMATIQUE DE LA KAVUN REPUBLIQUE</b>
-
-{emoji} {name} {surname}
-🆔 <code>К{id}Р</code>
-🚻 {sex}
-📅 {birthdate}, {years_old} років
-"""
-
 DIPLOMA = """
 <b>ДИПЛОМ {academy_name}</b>
 
@@ -151,7 +140,7 @@ FUND_DETAILED = """
 🏵️ <b>Мають доступ: </b>
 """
 
-PARTYIES = {
+PARTIES = {
     1: """
 📄 {name}
 👑 <a href="t.me/{username}">{owner_name} {owner_surname}</a>
