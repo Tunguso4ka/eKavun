@@ -35,7 +35,7 @@ class DB:
                 can_ban bool,
                 can_pin bool,
                 can_manage_money bool,
-                can_manage_partyies bool,
+                can_manage_parties bool,
                 can_give_passports bool,
                 can_promote bool,
                 can_give_diplomas bool
