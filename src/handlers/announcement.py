@@ -27,6 +27,3 @@ async def group_announce(message: Message):
         await group_message.pin(disable_notification=False)
     except Exception as e: await message.answer(f"Вийшла помилочка :'(\nПомилка {e}")
 
-async def spy_on(message: Message):
-    id=message.chat.id
-    if id not in ([MAIN_CHAT, LOG_CHANNEL] + AUTHORISIED_CHATS): await bot.send_message(LOG_CHANNEL, f"<b>Повідомлення.</b>\n\n<b>Людина:</b>\n@{message.from_user.username}\n<code>{message.from_user.id}</code>\n<b>Чат:</b>\n<code>{message.chat.title}</code>\n<code>{message.chat.id}</code>\n<b>Текст:</b>\n<code>{message.text}</code>")

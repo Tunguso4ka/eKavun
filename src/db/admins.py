@@ -11,7 +11,7 @@ class AdminsDB(DB):
         can_mute: bool,
         can_ban: bool,
         can_pin: bool,
-        can_manage_partyies: bool,
+        can_manage_parties: bool,
         can_manage_money: bool,
         can_give_passports: bool,
         can_promote: bool,
@@ -22,7 +22,7 @@ class AdminsDB(DB):
         await self.connection.execute("""DELETE FROM ADMINS WHERE user_id=?""", (id,))
         await self.connection.execute("""
             INSERT INTO ADMINS VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        """, (id, chat, can_mute, can_ban, can_pin, can_manage_money, can_manage_partyies, can_give_passports, can_promote, can_give_diplomas))
+        """, (id, chat, can_mute, can_ban, can_pin, can_manage_money, can_manage_parties, can_give_passports, can_promote, can_give_diplomas))
         await self.commit()
         return 0
 
@@ -30,7 +30,7 @@ class AdminsDB(DB):
         async with self.connection.execute("""
             SELECT
                 user_id, chat_id, can_mute, can_ban,
-                can_pin, can_manage_money, can_manage_partyies,
+                can_pin, can_manage_money, can_manage_parties,
                 can_give_passports, can_promote, can_give_diplomas
             FROM ADMINS WHERE user_id=?
         """, (id,)) as cursor:
